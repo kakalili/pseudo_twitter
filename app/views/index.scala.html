@@ -1,7 +1,85 @@
-@(message: String)
 
-@main("Welcome to Play") {
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />	
+	<title>Twitter</title>
+	<script type="text/javascript" src="@routes.Assets.at("javascripts/jquery-1.9.0.min.js")">
+	</script>
+	<link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/bootstrap/css/bootstrap-responsive.css")" />
+	<link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/bootstrap/css/bootstrap.css")" />
 
-    @play20.welcome(message)
+	<script type="text/javascript" src="@routes.Assets.at("stylesheets/bootstrap/js/bootstrap.js")"></script>
 
-}
+	<style type="text/css">
+		body{
+			background-image: url('@routes.Assets.at("images/background.JPG")');
+		}
+		#header{
+			width: 100%;
+			height: 50px;
+			background-color: rgb(142, 194, 218);
+			margin-bottom: 20px;
+		}
+		.logo{
+			float: left;
+			width: 80%;
+			margin-left: 200px;
+			margin-top: 10px;
+			background-size:200px 50px;
+			background-repeat:no-repeat;
+			width: 200px;
+			height: 50px;
+		}
+		.account{
+			float:right;
+			width: 20%;
+			height: 30px;
+			margin-top:10px;
+			margin-right:30px;
+			background-color: white;
+			border-radius: 5px;
+
+		}
+		.body{
+			width: 80%;
+			background-color: white;
+			margin:auto;
+			border-radius: 10px;
+
+		}
+	</style>
+</head>
+<body>
+	
+	<div id="header" >
+
+		<div class="logo">
+			<a href="@routes.Twitter.index()">
+				<img src='@routes.Assets.at("images/logo.JPG")'>
+			</a>
+		</div>
+		<div class="account">
+			<div style="display:table;width:100%;height:30px !important;">
+				<div style="display:table-row;">
+					<div style="display:table-cell;width:33.33333%;text-align:center;vertical-align:middle">
+						<a href="@routes.Twitter.index()">ホーム</a>
+					</div>
+					<div style="display:table-cell;width:33.33333%;text-align:center;vertical-align:middle">
+						<a href="@routes.Application.signup()">ユーザー登録</a>
+					</div>
+					<div style="display:table-cell;width:33.33333%;text-align:center;vertical-align:middle">
+						<a href="@routes.Application.login()">ログイン</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div id="footer">
+
+	</div>
+
+</body>
+
+</html>

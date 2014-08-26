@@ -1,0 +1,55 @@
+@(signupuser:String)
+@import helper._
+
+@home("Signup") {    
+   
+<style type="text/css">
+	.register-form{
+		display: table;
+		margin: auto;
+	}
+	.form-field{
+		display: table-row;
+	}
+	.field-label{
+		display:table-cell;
+		float:left;
+		width: 90%;
+		text-align: left;
+		padding-right: 0px;
+	}
+	.field-input{
+		display:table-cell;
+		width: 60%;
+	}
+</style>
+	<div class="body" >
+			<h3>ついったーに参加しました。</h3>
+			<p>@signupuser さんはついったーに参加されました。</p>
+			<p>ログインをクリックしてログインしつぶやいてください。</p>
+			@helper.form(action = routes.Application.login) {
+			<form id='register-form'>
+				<div class='register-form'>
+					<div class='form-field'>
+						<div class='field-label'>
+						</div>
+
+						<div class='field-input'>
+							<input type='submit' value='twitterにログイン'>
+						</div>
+
+					</div>
+				</div>
+			</form>
+			}
+	</div>
+
+
+	<div id="footer">
+
+	</div>
+
+        
+    
+    
+}

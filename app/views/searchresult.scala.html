@@ -1,0 +1,160 @@
+@(currentPage: com.avaje.ebean.Page[User],  currentFilter: String)
+
+@import helper._
+
+@****************************************
+* Helper generating navigation links    *
+****************************************@
+@link(newPage:Int, newFilter:String) = @{
+    
+    // Generate the link
+    routes.FriendSearch.search(newPage,newFilter)
+    
+}
+
+@main("Search Result") {
+
+<style type="text/css">
+		.feed{
+			border:0px;width:100%;margin-top:40px;
+		}
+		.ul-feed{
+			list-style: none;
+		}
+		.ul-feed li{
+			border:0px;
+			border-bottom: 1px black;
+			border-style: dotted;
+
+			width: 70%;
+			margin: auto;
+			margin-top:20px;
+		}
+		.post-time{
+			font-size: 10px;
+		}
+		.submit{
+			display: inline-block;
+			padding: 4px 12px;
+			margin-bottom: 0;
+			font-size: 14px;
+			line-height: 20px;
+			color: #333333;
+			text-align: center;
+			text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+			vertical-align: middle;
+			cursor: pointer;
+			background-color: #f5f5f5;
+			background-image: -moz-linear-gradient(top, #ffffff, #e6e6e6);
+			background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#e6e6e6));
+			background-image: -webkit-linear-gradient(top, #ffffff, #e6e6e6);
+			background-image: -o-linear-gradient(top, #ffffff, #e6e6e6);
+			background-image: linear-gradient(to bottom, #ffffff, #e6e6e6);
+			background-repeat: repeat-x;
+			border: 1px solid #cccccc;
+			border-color: #e6e6e6 #e6e6e6 #bfbfbf;
+			border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+			border-bottom-color: #b3b3b3;
+			-webkit-border-radius: 4px;
+			-moz-border-radius: 4px;
+			border-radius: 4px;
+
+		}
+	</style>
+	
+		<div class="body" style="display:table;padding:0px" >
+			<div style="display:table-row;width:100%;height:500px;">
+				<div style="display:table-cell;width:80%;padding:40px">
+		
+					<div style="display:table">
+						<div style="display:table-row">
+						<span><em> @currentFilter </em> の検索結果：</span>
+						<br>
+						<span>
+								<div id="actions">
+        
+							        @helper.form(routes.FriendSearch.frisearch) {
+							            <input type="search" id="searchbox" name="fsearch" value="@currentFilter" style="width:60%;margin-right:20px">
+							            <input type="submit" id="searchsubmit" value="検索" class="submit">
+							        }
+							        
+							    </div>
+							    </div>
+						</span>
+						<span style=''> ユーザー前と名前で検索</span>
+						<br>
+						<br>
+						<div style="display:table-row;width:100%">
+							
+							@if(currentPage.getTotalRowCount == 0) {
+        
+						        <div class="well" style="background-color:red;">
+						            <em>対象のユーザはみつかりません。</em>
+						        </div>
+						      } else {
+						      <div class='feed' style="display:table-cell;width:75%;border-top:2px black;border-style:dotted">
+						      <ul class='ul-feed'>
+						      @for(user <- currentPage.getList;post = user.getUserLastPostByName(user.username)) {
+								
+									<li>
+										<h5><a href='@routes.Twitter.usertwitter(0,user.username)'>@user.username</a> @user.fullname</h5>
+										<p>
+											@if(user.getUserLastPostByName(user.username) != null) {
+				                        		@user.getUserLastPostByName(user.username).post_content
+				                        		}
+										</p>
+										<span class='post-time'>
+											@if(post != null) {
+				                           		@post.post_time
+				                           		}
+											@form(routes.FriendSearch.addFollow(user.username,currentFilter,currentPage.getPageIndex), 'class -> "topRight") {
+												<div style='fload:right'>
+					                        		<input type="submit" value="Following" class="submit">
+					                        	</div>
+					                        }				                           		
+												<br>
+												<br>
+										</span>
+									</li>
+									}
+								</ul>
+								
+								<div id="pagination" class="pagination" style="float:right">
+						            <ul>
+						                @if(currentPage.hasPrev) {
+						                    <li class="prev">
+						                        <a href="@link(currentPage.getPageIndex - 1, currentFilter)">≪ 前へ</a>
+						                    </li>
+						                } else {
+						                    <li class="prev disabled">
+						                        <a>≪ 前へ</a>
+						                    </li>
+						                }
+						                @if(currentPage.hasNext) {
+						                    <li class="next">
+						                        <a href="@link(currentPage.getPageIndex + 1, currentFilter)">次へ　≫</a>
+						                    </li>
+						                } else {
+						                    <li class="next disabled">
+						                        <a>次へ　≫</a>
+						                    </li>
+						                }
+						            </ul>
+						        </div>
+									</div>	
+								}
+								
+						</div>
+					</div>
+				</div>
+				<div style="display:table-cell;width:20%;background-color:rgb(221, 238, 246);padding-top:100px;padding-left:20px;padding-right:20px">
+				
+				</div>
+		
+		</div>	
+	
+
+        
+}
+
+            

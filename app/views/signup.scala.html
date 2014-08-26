@@ -1,0 +1,271 @@
+@(signupForm: Form[User])
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@home("Signup") {    
+    
+        
+        
+        <style type="text/css">
+	.error-message{
+		display: none;	
+		margin-left: 218px;
+		background-color: rgb(255, 255, 153);
+		margin-left: 39%;
+		width: 30%;
+	}
+	.field-error-message{
+		display: none;	
+		font-style: italic;
+		color: red;
+	}
+	.register-form{
+		display: table;
+		margin: auto;
+	}
+	.form-field{
+		display: table-row;
+	}
+	.field-label{
+		display:table-cell;
+		width: 40%;
+		text-align: right;
+		padding-right: 20px;
+	}
+	.field-input{
+		display:table-cell;
+		width: 60%;
+	}
+</style>
+
+<script type="text/javascript" src="@routes.Assets.at("javascripts/input-check.js")"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	//muon check user da ton tai hay chua , phai dung ajax
+		$('input[type=submit]').click(function(e){
+			
+			$('.field-error-message').html(' ');
+			$('.error-message').hide();
+			$('.field-error-message').hide();
+			
+						
+			$('input').each(function(){
+				if ( $(this).attr('type')!='submit'){
+					var value = $(this).val();
+					var params;
+					switch($(this).attr('name')){
+						case 'fullname':
+							params = {
+								'kind' : 'name',
+								'min' : 4,
+								'max' : 20,
+								'label' : 'Name'
+							};
+							break;
+
+						case 'username':
+							params = {
+								'kind' : 'username',
+								'min' : 4,
+								'max' : 20,
+								'label' : 'Username'
+							};
+							break;
+
+						case 'passwd':
+							params = {
+								'kind' : 'password',
+								'min' : 4,
+								'max' : 8,
+								'label' : 'Password'
+							};
+							break;
+
+						case 'repeatPassword':
+							params = {
+								'kind' : 'password-confirm',
+								'min' : 4,
+								'max' : 8,
+								'label' : 'Password-confirm'
+							};
+							break;
+
+						case 'email':
+							params = {
+								'kind' : 'email',
+								'min' : 0,
+								'max' : 100,
+								'label' : 'Email'
+							};
+							break;
+
+						default:
+							return;
+					}
+					var res = input_field_checking(params.kind, value, params.min, params.max);
+					$('.error-message').show();
+					if(res!='ok'){
+						
+						var text = getMessage(res, params.label, params.min, params.max);
+ 							$('.field-error-message[field='+params.kind+']').html(text);
+ 							$('.field-error-message[field='+params.kind+']').show();
+					}
+
+					if(params.kind =='password-confirm'){
+						if($('input[name="passwd"]').val()!=$('input[name="repeatPassword"]').val()) {
+
+							$('.field-error-message[field=password-confirm]').append('<br>Password not match');
+							$('.field-error-message[field=password-confirm]').show();
+							
+						}
+					}
+					
+					if(!$('.checkbox').prop('checked')){
+						$('.field-error-message[field=checkbox]').text('You must check this checkbox');
+						$('.field-error-message[field=checkbox]').show();
+					}
+
+					if(!$('.checkbox').prop('checked')||res!='ok'||$('input[name="passwd"]').val()!=$('input[name="repeatPassword"]').val()) {
+						e.preventDefault();
+					}
+					
+					
+				}
+
+			});
+
+		});
+
+});
+
+
+
+
+</script>
+	<div class="body" >
+			<div style="float:right"> もうついったに登録していますか？ <a href="@routes.Application.login()">ログイン</a></div>
+			<h3>ついったーに参加しました。</h3>
+			<div class="error-message">
+				<!-- NANE -->
+				<div class='field-error-message' field='name'>
+					error-text	
+				</div>
+
+				<!-- USERNAME -->
+				<div class='field-error-message' field='username'>
+					error-text	
+				</div>
+
+				<!-- PASSWORD -->
+				<div class='field-error-message' field='password'>
+					error-text	
+				</div>
+
+				<!-- PASSWORD-CONFIRM -->
+				<div class='field-error-message' field='password-confirm'>
+					error-text	
+				</div>
+
+
+				<!-- EMAIL -->
+				<div class='field-error-message' field='email'>
+					error-text	
+				</div>
+				
+				<!-- CHECK -->
+				<div class='field-error-message' field='checkbox'>
+					error-text	
+				</div>
+
+			</div>
+			@helper.form(action = routes.Application.submit) {
+			<form id='register-form'>
+				<div class='register-form'>
+				<!-- NAME -->
+					<div class='form-field'>
+						<div class='field-label'>
+							名前	
+						</div>
+
+						<div class='field-input'>
+							<input name='fullname' type='text'>
+						</div>
+					</div>
+
+				<!-- USERNAME -->
+					<div class='form-field'>
+						<div class='field-label'>
+							ユーザー前
+						</div>
+
+						<div class='field-input'>
+							<input name='username' type='text'>
+						</div>
+					</div>
+				<!-- PASSWORD -->
+					<div class='form-field'>
+						<div class='field-label'>
+							パスワード
+						</div>
+
+						<div class='field-input'>
+							<input name='passwd' type='password'>
+						</div>
+					</div>
+				<!-- CONFIRM PASSWD -->
+					<div class='form-field'>
+						<div class='field-label'>
+							パスワード（確認)
+						</div>
+
+						<div class='field-input'>
+							<input name='repeatPassword' type='password'>
+						</div>
+					</div>
+				<!-- MAIL ADDRESS -->
+					<div class='form-field'>
+						<div class='field-label'>
+							メールアドレス
+						</div>
+
+						<div class='field-input'>
+							<input name='email' type='text'>
+						</div>
+				
+					</div>
+					<!-- CHECKBOX -->
+					<div class='form-field'>
+						<div class='field-label'>
+							<input type='checkbox' class="checkbox" name="accept">
+						</div>
+
+						<div class='field-input'>
+							つぶやきを非公開にする
+						</div>
+
+					</div>
+
+					<div class='form-field'>
+						<div class='field-label'>
+						</div>
+
+						<div class='field-input'>
+							<input type='submit' value='アカウントを作成する'>
+						</div>
+
+					</div>
+				</div>
+			</form>
+			}
+	</div>
+
+
+	<div id="footer">
+
+	</div>
+
+        
+    
+    
+}

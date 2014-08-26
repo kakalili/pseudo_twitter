@@ -1,0 +1,161 @@
+@(form: Form[Application.Login])
+@home("Login") {
+        @helper.form(routes.Application.authenticate) {
+            
+            <style type="text/css">
+		.error-message{
+			display: none;	
+			margin-left: 218px;
+			background-color: rgb(255, 255, 153);
+			margin-left: 29%;
+			width: 62%;
+			margin-bottom:20px;
+		}
+		.field-error-message{
+			display: none;	
+			font-style: italic;
+			color: red;
+		}
+		.register-form{
+			display: table;
+			margin: auto;
+		}
+		.form-field{
+			display: table-row;
+		}
+		.field-label{
+			display:table-cell;
+			width: 40%;
+			text-align: right;
+			padding-right: 20px;
+		}
+		.field-input{
+			display:table-cell;
+			width: 60%;
+		}
+	</style>
+	<script type="text/javascript" src="@routes.Assets.at("javascripts/input-check.js")"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+	//muon check user da ton tai hay chua , phai dung ajax
+	$('input[type=submit]').click(function(e){
+		
+		$('.field-error-message').html(' ');
+		$('.error-message').hide();
+		$('.field-error-message').hide();
+
+		$('input').each(function(){
+			if ( $(this).attr('type')!='submit'){
+				var value = $(this).val();
+				var params;
+				switch($(this).attr('name')){
+
+					case 'username':
+					params = {
+						'kind' : 'username',
+						'min' : 4,
+						'max' : 20,
+						'label' : 'Username'
+					};
+					break;
+
+					case 'passwd':
+					params = {
+						'kind' : 'password',
+						'min' : 4,
+						'max' : 8,
+						'label' : 'Password'
+					};
+					break;
+
+					default:
+					return;
+				}
+				var res = input_field_checking(params.kind, value, params.min, params.max);
+				if(res!='ok'){
+					$('.error-message').show();
+					var text = getMessage(res, params.label, params.min, params.max);
+					$('.field-error-message[field='+params.kind+']').html(text);
+					$('.field-error-message[field='+params.kind+']').show();
+
+					e.preventDefault();
+					return;
+				}
+
+			}
+
+		});
+
+});
+
+});
+		</script>
+<div class="body" >
+	<div style="display:table-row">
+		<div style="display:table-cell;width:80%">
+			<h3>ログイン</h3>
+
+			<div class="error-message">
+
+				<!-- USERNAME -->
+				<div class='field-error-message' field='username'>
+					error-text	
+				</div>
+
+				<!-- PASSWORD -->
+				<div class='field-error-message' field='password'>
+					error-text	
+				</div>
+
+			</div>
+			<div class='login-form'>
+			
+				<form>
+				
+					<div style="display:table;margin:auto">
+						<div style="display:table-row">
+							<div style="display:table-cell">	
+								ユーザーID
+							</div>
+							<div style="display:table-cell">	
+								<input type='text' name='username' placeholder='username'>
+							</div>
+						</div>
+
+						<div style="display:table-row">
+							<div style="display:table-cell">	
+								パスワード
+							</div>
+							<div style="display:table-cell">	
+								<input type='password' name='passwd' placeholder='password'>
+							</div>
+						</div>
+
+						<div style="display:table-row">
+							<div style="display:table-cell">	
+
+							</div>
+							<div style="display:table-cell">	
+								<input type='submit' value="ログイン">
+							</div>
+						</div>
+
+					</div>
+				</form>
+				
+			</div>
+		</div>
+		
+		<div style="display:table-cell;width:20%;background-color:rgb(221, 238, 246);padding-top:100px;padding-left:20px;padding-right:20px">
+			
+			ユーザー登録無料
+			<a href="@routes.Application.signup()"  style="width:100%;heigth:100%;color:white">
+				<div style="width:200px;height:35px;background-color:rgb(64, 117, 149);border-radius:5px;text-align:center;vertical-align:middle;line-height:35px">
+					ユーザー登録
+				</div>
+			</a>
+		</div>
+		}
+}
+
+

@@ -1,0 +1,177 @@
+@(currentPage: com.avaje.ebean.Page[Posts],following:Int,followed:Int,usernow:String,psTemp:Int)
+@import helper._
+
+@****************************************
+* Helper generating navigation links    *
+****************************************@
+@link(newPage:Int,newName:String) = @{  
+    // Generate the link
+    routes.Twitter.usertwitter(newPage,newName)
+    
+}
+
+@main("Home Page") {
+
+<div class="body" >
+		<div style="display:table;width:100%;min-height:500px">
+			<div style="display:table-row">
+				
+				<style type="text/css">
+					.feed{
+						border:0px;width:100%;margin-top:40px;
+					}
+					.ul-feed{
+						list-style: none;
+					}
+					.ul-feed li{
+						border:0px;
+						border-bottom: 1px black;
+						border-style: dotted;
+
+						width: 70%;
+						margin: auto;
+						margin-top:20px;
+					}
+					.post-time{
+						font-size: 10px;
+					}
+					.account-div div{
+						border-style: solid;
+						border:1px black;
+						background-color: rgb(221, 238, 246);
+					}
+				</style>
+				<script type="text/javascript">
+					$('textarea').keyup(function(){
+
+						if($(this).val().length>0)
+							$('.post-button').removeAttr('disabled');
+						else
+							$('.post-button').attr('disabled', 'disabled');
+					});
+				</script>
+				<script type="text/javascript">
+					$(document).ready(function(e){
+						$('.delete-post').click(function(e){
+							var res = confirm('Sure you want to delete this tweet?There is NO undo?');
+							console.log(res);
+							if(res){
+								
+							}else{
+								e.preventDefault();
+								return;
+							}
+						});
+					});
+				</script>
+				
+				<div style="display:table;border:0px;border-top:1px black;border-style:dotted;width: 94%;">
+					<div style="display:table-row">
+						<div class='feed' style="display:table-cell;width:75%">
+						@if(currentPage.getTotalRowCount == 0) {
+        
+        				<div class="well">
+            			<em>Nothing to display</em>
+        				</div>
+        
+    					} else {
+    					<ul class='ul-feed'>
+    					@for(post <- currentPage.getList) {
+							
+								<li>
+									<p>
+										<a href="@routes.Twitter.usertwitter(0,post.getUserPost.username)">@post.getUserPost.username</a>:
+										 @if(post == null) {
+                        					<em>-</em>
+                        				} else {
+                        					@post.post_content
+                        				}
+									</p>
+
+									<div>
+										<div class='post-time'>
+											@if(post == null) {
+				                        		<em>-</em>
+				                        	}else{
+				                           		@post.post_time
+				                           		}
+				                           	@if(post.getUserPost.username == usernow) {
+						                    	@form(routes.Twitter.usertwdel(post.post_id,currentPage.getPageIndex), 'class -> "topRight") {
+						                    	
+						                        	<input type="submit" value=' ' style='float:right;width:25px;height:25px;background-image:url("@routes.Assets.at("images/delete.png")")' class="delete-post">
+						                        	
+						                        	
+						                        }	
+					                        }
+					                     }
+					                     
+										
+										</div>
+									        <div id="pagination" class="pagination" style="float:right">
+									            <ul>
+									                @if(currentPage.hasPrev) {
+									                    <li class="prev">
+									                        <a href="@link(currentPage.getPageIndex - 1,usernow)">≪ 前へ</a>
+									                    </li>
+									                } else {
+									                    <li class="prev disabled">
+									                        <a>≪ 前へ</a>
+									                    </li>
+									                }
+									                @if(currentPage.hasNext) {
+									                    <li class="next">
+									                        <a href="@link(currentPage.getPageIndex + 1,usernow)">次へ　≫</a>
+									                    </li>
+									                } else {
+									                    <li class="next disabled">
+									                        <a>次へ　≫</a>
+									                    </li>
+									                }
+									            </ul>
+									        </div>
+									        
+									    }
+									    </ul>
+										</div>
+									</div>
+
+								</li>
+
+							</ul>
+						</div>
+
+						<div style="display:table-cell;width:25%;padding:40px;background-color: rgb(221, 238, 246);" class='account-div'>
+							<div>
+								<p>@usernow</p>
+							</div>
+							<div style="display:table;width:100%">
+								<div style="display:table-row">
+									<div style="display:table-cell;width:33.3333333%">
+										<b>@following</b>
+										<br>
+										<a href="@routes.Follow.getfollow(0,0)">フォローしている</a>
+										</div>
+									<div style="display:table-cell;width:33.3333333%">
+										<b>@followed</b>
+										<br>
+										<a href="@routes.Follow.getfollow(0,1)">フォローされている</a>
+									</div>
+									<div style="display:table-cell;width:33.3333333%">
+										<b>@psTemp</b>
+										<br>
+										<a href="@routes.Twitter.usertwitter(0,usernow)">投稿数</a>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+	<div id="footer">
+}
+
+            

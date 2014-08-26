@@ -1,0 +1,226 @@
+@(currentPage: com.avaje.ebean.Page[User_Follow], types: Int,following_a:Int,followed_a:Int,usernow:String)
+
+@import helper._
+
+@**************************************** 
+* Helper generating navigation links 
+* ****************************************@ 
+@link(newPage:Int, newType:Int) = @{
+ val tempType = newType
+	 // Generate the link
+	  routes.Follow.getfollow(newPage,tempType)
+
+} 
+
+@main("Follow User") {
+
+</script>
+<style type="text/css">
+.account-div{
+	display:table-cell;
+	width:23%;
+	padding:0px;
+	background-color: rgb(221, 238, 246);
+}
+.user-list{
+	list-style: none;
+	border: 0px;
+	border-top: 2px rgb(238,238, 238);
+	border-style: solid;
+	margin-left:0px;
+
+}
+li:nth-child(2n+1){
+	background-color: rgb(249, 249, 249);
+
+}
+
+.user-detail{
+	border: 0px;
+	border-bottom: 1px rgb(238,238, 238);
+	border-style: solid;
+	margin-left: 100px;
+}
+.user-detail p{
+	width: 70%;
+}
+.time-stamp{
+	font-size: 11px;
+	color: #696969;
+}
+	
+
+</style>
+<div class="body" style="display:table;padding:0px" >
+	<div style="display:table-row;width:100%;height:500px;">
+	@if(currentPage.getTotalRowCount == 0) {
+
+				<div class="well" style="background-color:red;">
+					<em>Nothing</em>
+				</div>
+				
+				} else {
+			
+					@if(types == 0) {
+					
+					<div style="display:table-cell;width:75%;padding:40px">
+					<h3 style="margin-bottom:70px;">
+							 @usernow は　@following_a 人をフォローしています。
+					</h3>
+					ユーザー前/名前
+					
+						
+					<ul class='user-list'>
+					
+						 @for(fol <-currentPage.getList;user = fol.getUser(fol.user_des_id);post =fol.getUserLastPost(fol.user_des_id)) {
+				<li class='user-detail'>
+					<h4  style="margin:0px">
+						<a href='@routes.Twitter.usertwitter(0,user.username)'>@user.username</a>
+					</h4>
+					<span>@user.fullname</span>
+					@if(post != null) {
+						<p>@post.post_content</p>
+					}
+					@if(post != null) {
+						<span class='time-stamp'>@post.post_time</span>
+					}
+					<script type="text/javascript">
+					$(document).ready(function(e){
+						$('.dt_danger').click(function(e){
+							var res = confirm('Sure you want to unfollowing this user?');
+							console.log(res);
+							if(res){
+								
+							}else{
+								e.preventDefault();
+								return;
+							}
+						});
+					});
+				</script>
+					<div class="btn-group" style="float:right;margin-top:-10px;">
+					@form(routes.Follow.unfollow(fol.user_follow_id,currentPage.getPageIndex), 'class -> "topRight") {
+                        <div class="btn-group">
+					     <button class="btn dropdown-toggle" data-toggle="dropdown">
+					      <img src='@routes.Assets.at("images/setting.png")'>
+					       <span class="caret"></span>
+					     </button>
+					     <ul class="dropdown-menu" style="min-width:0px;padding:0px">
+					       <li><input type="submit" value="Unfollow" class="dt_danger"></li>
+					     </ul>
+					   </div>
+					   }
+					   
+					</div>
+                 </li>
+                    } 
+                 </ul>
+                    } else {
+                    
+                    <div style="display:table-cell;width:75%;padding:40px">
+					<h3 style="margin-bottom:70px;">
+							 @usernow は　@following_a 人をフォローされています。
+					</h3>
+					ユーザー前/名前
+					
+						
+					<ul class='user-list'>
+                    
+                     @for(fol <-currentPage.getList;user = fol.getUser(fol.user_src_id);post =fol.getUserLastPost(fol.user_src_id)) {
+				<li class='user-detail'>
+					<h4  style="margin:0px">
+						<a href='@routes.Twitter.usertwitter(0,user.username)'>@user.username</a>
+					</h4>
+					<span>@user.fullname</span>
+					@if(post != null) {
+						<p>@post.post_content</p>
+					}
+					@if(post != null) {
+						<span class='time-stamp'>@post.post_time</span>
+					}
+					
+					<script type="text/javascript">
+					$(document).ready(function(e){
+						$('.dt_danger').click(function(e){
+							var res = confirm('Sure you want to following this user?');
+							console.log(res);
+							if(res){
+								
+							}else{
+								e.preventDefault();
+								return;
+							}
+						});
+					});
+				</script>
+					   <div class="btn-group" style="float:right;margin-top:-10px;">
+					@form(routes.Follow.following(fol.user_src_id,currentPage.getPageIndex), 'class -> "topRight") {
+					
+						<div class="btn-group">
+					     <button class="btn dropdown-toggle" data-toggle="dropdown">
+					      <img src='@routes.Assets.at("images/setting.png")'>
+					       <span class="caret"></span>
+					     </button>
+					     <ul class="dropdown-menu" style="min-width:0px;padding:0px">
+					       <li><input type="submit" value="Following" class="dt_danger"></li>
+					     </ul>
+					   </div>
+	                        	
+	                        }            
+	                        </div>
+	            </li>
+                    }
+                    
+                    </ul>
+                   }
+				
+				<div id="pagination" class="pagination" style="float:right">
+					<ul>
+						@if(currentPage.hasPrev) {
+						<li class="prev"><a
+							href="@link(currentPage.getPageIndex - 1, types)">≪ 前へ</a>
+						</li> } else {
+						<li class="prev disabled"><a>≪ 前へ</a></li> }
+						@if(currentPage.hasNext) {
+						<li class="next"><a
+							href="@link(currentPage.getPageIndex + 1, types)">次へ　≫</a></li> 
+							} else {
+						<li class="next disabled"><a>次へ　≫</a></li> 
+						}
+					</ul>
+				</div>
+			
+			
+		</div>
+		}
+		<div style="display:table-cell;width:25%;padding:40px;background-color: rgb(221, 238, 246); class='account-div'>
+							<div>
+								<p>@usernow</p>
+							</div>
+							<div style="display:table;width:100%">
+								<div style="display:table-row">
+									<div style="display:table-cell;width:33.3333333%">
+										<b>@following_a</b>
+										<br>
+										<a href="@routes.Follow.getfollow(0,0)">フォローしている</a>
+										</div>
+									<div style="display:table-cell;width:33.3333333%">
+										<b>@followed_a</b>
+										<br>
+										<a href="@routes.Follow.getfollow(0,1)">フォローされている</a>
+									</div>
+									<div style="display:table-cell;width:33.3333333%">
+										<a href="@routes.Twitter.usertwitter(0,usernow)">つぶやき </a>
+									</div>
+								</div>
+							</div>
+						</div>
+	</div>
+	</div>
+
+
+
+
+ 
+}
+
