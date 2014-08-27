@@ -4,6 +4,9 @@ import play.api._
 import play.api.mvc._
 import play.api.data.Forms._
 import play.api.data._
+
+import models._
+import views._
 /** Uncomment the following lines as needed **/
 /**
 import play.api.Play.current
@@ -35,27 +38,33 @@ object FriendSearch extends Controller with Secured{
 
 	//search friend function
 	def friendsearch = Action { username =>
-		Ok(html.friendsearch(getSearchInput))
+		Ok(views.html.friendsearch(getSearchInput))
 	}
 
 	//action search
-	def dosearch = Action { username =>
+	def dosearch = Action { request =>
 		val friForm = getSearchInput.bindFromRequest.get
 		Redirect(routes.FriendSearch.search(0, friForm.fsearch))
 	}
 
 	//search
-	def search(page: Int, keysearch: String) = Action { username =>
-		Ok(views.html.searchresult(User.page(username, page, 10, "username", "asc", keysearch), keysearch))
+	def search(page: Int, keysearch: String) = Action { request =>
+		request.session.get("username").map { user =>
+			Ok(views.html.searchresult(User.page(user, page, 10, "username", "asc", keysearch), keysearch))
+		}
+		
 	}
 
 	//add Follow from search page
-	def addFollow(id: String, filter: String, page: Int) = Action { username =>
-		User_Follow.add(username, id)
-		Redirect(routes.FriendSearch.search(page, filter)).withNewSession.flashing(
+	def addFollow(id: String, filter: String, page: Int) = Action { request =>
+		request.session.get("username").map {user =>
+			User_Follow.add(user, id)
+			Redirect(routes.FriendSearch.search(page, filter)).withNewSession.flashing(
 			"success" , "This user has been followed"
 			)
 	}
+		}
+		
 
 	//def
 	def frisearch = Action { username =>

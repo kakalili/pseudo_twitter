@@ -80,5 +80,18 @@ object User {
 				).as(User.simple.singleOpt)
 		}
 	}
+
+	//insert models
+	def insert(fullname: String, username: String, passwd: String, email: String) : Int = {
+		DB.withConnection { implicit connection =>
+			val rowNumbers = SQL("insert into users values({fullname}, {username}, {passwd}, {email})").on(
+				'fullname -> fullname,
+				'username -> username,
+				'passwd -> passwd,
+				'email -> email
+				).executeUpdate()
+			rowNumbers
+		}
+	}
 }
 

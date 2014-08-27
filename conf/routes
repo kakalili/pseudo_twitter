@@ -3,7 +3,55 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.Application.index
+GET     /                           controllers.Application.index()
+
+
+POST    /login                      controllers.Application.authenticate()
+GET     /login                      controllers.Application.login()
+
+
+#signup
+GET     /signup                     controllers.Application.signup()
+
+POST    /signup                     controllers.Application.submit()
+
+#GET		/signupdone					controllers.Application.signupdoneget()
+
+#logout
+GET 	/logout						controllers.Application.logout()
+
+
+#twitter
+GET 	/twitter					controllers.Twitter.index()
+POST	/twitter					controllers.Twitter.addpost()
+
+GET		/twitters					controllers.Twitter.twitters(page:Int)
+GET		/usertwitter				controllers.Twitter.usertwitter(page:Int,name:String)
+
+
+POST	/del						controllers.Twitter.del(id:Int,page:Int)
+POST	/usertwdel					controllers.Twitter.usertwdel(id:Int,page:Int)
+POST	/following					controllers.Follow.following(des:String,page:Int)
+POST	/unfollow					controllers.Follow.unfollow(id:Int,page:Int)
+
+POST	/addFollow					controllers.FriendSearch.addFollow(id:String,fil:String,page:Int)
+
+
+#search
+GET 	/aaa						controllers.FriendSearch.index()
+GET 	/friendsearch				controllers.FriendSearch.friendsearch()
+POST 	/friendsearch				controllers.FriendSearch.friendsearchaction()
+
+#search result
+#GET 	/searchresult/:page			controllers.FriendSearch.search(page:Int)
+GET 	/searchresult				controllers.FriendSearch.search(page:Int ?= 0,keysearch ?= "")				
+
+POST	/searchresult				controllers.FriendSearch.frisearch()		
+
+#follow
+#GET 	/follows					controllers.Follow.index(page:Int ?= 0, type:Int ?= 0)
+#GET 	/follow						controllers.Follow.getfollow(page:Int ?= 0, type:Int ?= 0)
+GET		/follow						controllers.Follow.getfollow(page:Int, type:Int)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
