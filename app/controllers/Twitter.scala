@@ -26,7 +26,7 @@ object Twitter extends Controller with Secured{
 	case class TakePost(postcontent: String)
 
 	//defined form helper
-	val TakePostForm = Form(
+	val takePostForm = Form(
 		mapping(
 			"postcontent" -> text
 			)(TakePost.apply)(TakePost.unapply)
@@ -42,12 +42,14 @@ object Twitter extends Controller with Secured{
   	def twitters(page: Int) = Action { request =>
       request.session.get("username").map { user =>
         val postTemp = Posts.getLastPost
-        val following = User_Follow.page(user, 0, page, 10).getTotalRowCount
-        val followed = User_Follow.page(user, 1, page, 10).getTotalRowCount
+        val following: Long = User_Follow.page(user, 0, page, 10).total
+        val followed: Long = User_Follow.page(user, 1, page, 10).total
         val ps = Posts.userpage(user, page, 10,"post_time", "desc")
 
-        val psTemp: Int = ps.getTotalRowCount
-        Ok(views.html.twitter(Posts.page(user, page, 10), following, followed, user, postTemp, psTemp))
+        val psTemp: Long = ps.total
+        Ok(views.html.twitter(Posts.page(user, page, 10, "post_time", "desc"), following, followed, user, postTemp, psTemp))
+      }.getOrElse {
+        Redirect(routes.Twitter.index)
       }
   		
   	}
@@ -55,12 +57,14 @@ object Twitter extends Controller with Secured{
   	//usertwitter action
 	def usertwitter(page: Int, name: String) = Action { request =>
       request.session.get("username").map { user =>
-        val following = User_Follow.page(user, 0, page, 10).getTotalRowCount
-        val followed = User_Follow.page(user, 1, page, 10).getTotalRowCount
+        val following: Long = User_Follow.page(user, 0, page, 10).total
+        val followed: Long = User_Follow.page(user, 1, page, 10).total
         val ps = Posts.userpage(user, page, 10,"post_time", "desc")
 
-        val psTemp: Int = ps.getTotalRowCount
-        Ok(views.html.usertwitter(Posts.userpage(name, page, 10), following, followed, user, psTemp))
+        val psTemp: Long = ps.total
+        Ok(views.html.usertwitter(Posts.userpage(name, page, 10, "post_time", "desc"), following, followed, user, psTemp))
+      }.getOrElse {
+        Redirect(routes.Twitter.index)
       }
   		
   	}  	
@@ -80,6 +84,8 @@ object Twitter extends Controller with Secured{
         Redirect(routes.Twitter.usertwitter(page, user)).withNewSession.flashing(
         "success" -> "This post has been deleted"
         )
+      }.getOrElse {
+        Redirect(routes.Twitter.index)
       }
       
     }
@@ -87,9 +93,16 @@ object Twitter extends Controller with Secured{
     //Add a post action
     def addpost = Action { request =>
       request.session.get("username").map { user =>
-        val postForm = TakePostForm.bindFromRequest.get
-        Posts.addPost(user, postForm.postcontent)
-        Home.flashing("success" -> "This post had completed!")
+        takePostForm.bindFromRequest.fold(
+          errors => BadRequest(html.twitters(errors)),
+          user => {
+            Posts.addPost(user, postForm.postcontent)
+             Home.flashing("success" -> "This post had completed!")
+         }
+          )
+        
+      }.getOrElse {
+        Redirect(routes.Twitter.index)
       }
       
     }

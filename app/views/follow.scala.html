@@ -1,4 +1,4 @@
-@(currentPage: com.avaje.ebean.Page[User_Follow], types: Int,following_a:Int,followed_a:Int,usernow:String)
+@(currentPage: Page[User_Follow], types: Int,following_a:Long,followed_a:Long,usernow:String)
 
 @import helper._
 
@@ -53,7 +53,7 @@ li:nth-child(2n+1){
 </style>
 <div class="body" style="display:table;padding:0px" >
 	<div style="display:table-row;width:100%;height:500px;">
-	@if(currentPage.getTotalRowCount == 0) {
+	@if(currentPage.total == 0) {
 
 				<div class="well" style="background-color:red;">
 					<em>Nothing</em>

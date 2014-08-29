@@ -37,38 +37,53 @@ object FriendSearch extends Controller with Secured{
 	def index = Action {Home}
 
 	//search friend function
-	def friendsearch = Action { username =>
-		Ok(views.html.friendsearch(getSearchInput))
+	def friendsearch = Action { request =>
+		Ok(html.friendsearch())
 	}
 
 	//action search
 	def dosearch = Action { request =>
-		val friForm = getSearchInput.bindFromRequest.get
-		Redirect(routes.FriendSearch.search(0, friForm.fsearch))
+		val friForm = getSearchInput.bindFromRequest
+		friForm.fold(
+			errors = {
+				form => Redirect(routes.Twitter.friendsearch)
+				},
+			success = {
+				keys => Redirect(routes.FriendSearch.search(0, friForm.fsearch))
+			}
+			)
+		
 	}
 
 	//search
 	def search(page: Int, keysearch: String) = Action { request =>
 		request.session.get("username").map { user =>
 			Ok(views.html.searchresult(User.page(user, page, 10, "username", "asc", keysearch), keysearch))
+		}.getOrElse {
+			Redirect(routes.Twitter.index)
 		}
 		
 	}
 
 	//add Follow from search page
 	def addFollow(id: String, filter: String, page: Int) = Action { request =>
-		request.session.get("username").map {user =>
+		request.session.get("username").map { user =>
 			User_Follow.add(user, id)
 			Redirect(routes.FriendSearch.search(page, filter)).withNewSession.flashing(
-			"success" , "This user has been followed"
+			"success" -> "This user has been followed"
 			)
+	}.getOrElse {
+		Redirect(routes.Twitter.index)
 	}
 		}
 		
 
 	//def
-	def frisearch = Action { username =>
-		val friForm = getSearchInput.bindFromRequest.get
-		Redirect(routes.FriendSearch.search(0, friForm.fsearch))
+	def frisearch = Action { request =>
+		getSearchInput.bindFromRequest.fold(
+			errors => BadRequest(html.friendsearch(errors)),
+			user => Redirect(routes.FriendSearch.search(0, friForm.fsearch))
+			)
+		
 	}
 }

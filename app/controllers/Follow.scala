@@ -30,14 +30,14 @@ object Follow extends Controller with Secured {
 	//get follow
 	def getfollow(page: Int, tp: Int) = Action { request =>
 		request.session.get("username").map{ user =>
-
-		
-			val following_number: Int = User_Follow.page(user, 0, page, 10).getTotalRowCount
-			val followed_number: Int = User_Follow.page(user, 1, page, 10).getTotalRowCount
+			val following_number: Long = User_Follow.page(user, 0, page, 10).total
+			val followed_number: Long = User_Follow.page(user, 1, page, 10).total
 			Ok(views.html.follow(
 			User_Follow.page(user, tp, page, 10), 
 			tp, following_number, followed_number, user
 		))
+		}.getOrElse {
+			 Redirect(routes.Twitter.index)
 		}
 		
 	} //end getfollow

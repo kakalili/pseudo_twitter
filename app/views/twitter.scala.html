@@ -1,4 +1,4 @@
-@(currentPage: com.avaje.ebean.Page[Posts],following:Int,followed:Int,usernow:String,postTemp:Posts,psTemp:Int)
+@(currentPage: Page[Posts],following:Long,followed:Long,usernow:String,postTemp:Posts,psTemp:Long)
 @import helper._
 
 @****************************************
@@ -101,7 +101,7 @@
 				<div style="display:table;border:0px;border-top:1px black;border-style:dotted;width: 94%;">
 					<div style="display:table-row">
 						<div class='feed' style="display:table-cell;width:75%">
-						@if(currentPage.getTotalRowCount == 0) {
+						@if(currentPage.total == 0) {
         
         				<div class="well" style="background-color:red;">
             			<em>Nothing tweet</em>

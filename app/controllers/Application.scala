@@ -61,7 +61,7 @@ object Application extends Controller {
   //index page
   def index = Action { request =>
     request.session.get("username").map { user =>
-      Ok(views.html.index)  
+      Ok(html.index())  
     }.getOrElse {
       Redirect(routes.Twitter.index) 
     }

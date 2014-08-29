@@ -40,7 +40,7 @@ POST	/addFollow					controllers.FriendSearch.addFollow(id:String,fil:String,page
 #search
 GET 	/aaa						controllers.FriendSearch.index()
 GET 	/friendsearch				controllers.FriendSearch.friendsearch()
-POST 	/friendsearch				controllers.FriendSearch.friendsearchaction()
+POST 	/friendsearch				controllers.FriendSearch.dosearch()
 
 #search result
 #GET 	/searchresult/:page			controllers.FriendSearch.search(page:Int)

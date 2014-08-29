@@ -1,4 +1,4 @@
-@(currentPage: com.avaje.ebean.Page[User],  currentFilter: String)
+@(currentPage: Page[User],  currentFilter: String)
 
 @import helper._
 
@@ -86,14 +86,14 @@
 						<br>
 						<div style="display:table-row;width:100%">
 							
-							@if(currentPage.getTotalRowCount == 0) {
+							@if(currentPage.total == 0) {
         
 						        <div class="well" style="background-color:red;">
 						            <em>対象のユーザはみつかりません。</em>
 						        </div>
 						      } else {
 						      <div class='feed' style="display:table-cell;width:75%;border-top:2px black;border-style:dotted">
-						      <ul class='ul-feed'>
+						      <ul class='ul-feed'>zz
 						      @for(user <- currentPage.getList;post = user.getUserLastPostByName(user.username)) {
 								
 									<li>
