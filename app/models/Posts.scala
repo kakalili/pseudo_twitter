@@ -44,7 +44,7 @@ object Posts{
 	} //end 
 
 	//Retrieve a last post of an author
-	def findLastPost(username: String) : Option[Posts] = {
+	def findLastPost(username: String) : Posts = {
 		DB.withConnection { implicit connection =>
 			SQL(
 				"""
@@ -55,12 +55,12 @@ object Posts{
 				"""
 				).on(
 				'username -> username
-				).as(Posts.simple.singleOpt)
+				).as(Posts.simple.single)
 		}
 	}//end find last post
 
 	//Retrieve a last post of any post
-	def getLastPost : Option[Posts] = {
+	def getLastPost : Posts = {
 		DB.withConnection { implicit connection =>
 			SQL(
 				"""
@@ -68,7 +68,7 @@ object Posts{
 					where post_time = (select max(posts.post_time) from posts)
 					limit 0,1
 				"""
-				).as(Posts.simple.singleOpt)
+				).as(Posts.simple.single)
 		}
 	} //end get last post
 

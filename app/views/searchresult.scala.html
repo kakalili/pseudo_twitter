@@ -1,6 +1,7 @@
 @(currentPage: Page[User],  currentFilter: String)
 
 @import helper._
+@import play.api.libs.json
 
 @****************************************
 * Helper generating navigation links    *
@@ -95,13 +96,31 @@
 						      <div class='feed' style="display:table-cell;width:75%;border-top:2px black;border-style:dotted">
 						      <ul class='ul-feed'>
 						      @Option(currentPage.items).filterNot(_.isEmpty).map { users =>
-						      @users.map {
+						      @for(itemUser <- users.toList) @{
+						      	val post: Posts = Posts.findLastPost(itemUser.username)
+						      	<li>
+						      	 <h5><a href='@routes.Twitter.usertwitter(0,user.username)'>@user.username</a> @user.fullname</h5>
 
-						      	user => {
+						      	 <p>
+								    @if(@post != null) {
+						        		post.post_content
+						        		}
+							    </p>
 
-						      	println(@user.username)
-						      	}
+							    <span class="post-time">
+								    @if(@post != null) {
+						           		post.post_time
+						           		}
+						           	@helper.form(routes.FriendSearch.addFollow(user.username,currentFilter,currentPage.getPageIndex), 'class -> "topRight") {
+						           		<div style="fload:right">
+											<input type="submit" value="Following" class="submit"></input>
+						           		</div>
+						           	}
+							    </span>
+						      	</li>
 						      }
+						      	
+						      	
 						      	}
 								</ul>
 								

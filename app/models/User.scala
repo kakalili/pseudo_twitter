@@ -61,9 +61,9 @@ object User {
 		}
 	}
 
-	def findByUsername(username: String) : Option[User] = {
+	def findByUsername(username: String) : User = {
 		DB.withConnection { implicit connection =>
-			SQL("select * from users where username = {username}").on('username -> username).as(User.simple.singleOpt)
+			SQL("select * from users where username = {username}").on('username -> username).as(User.simple.single)
 		}
 	}
 

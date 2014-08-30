@@ -71,49 +71,56 @@ li:nth-child(2n+1){
 					
 						
 					<ul class='user-list'>
-					
-						 @for(fol <-currentPage.getList;user = fol.getUser(fol.user_des_id);post =fol.getUserLastPost(fol.user_des_id)) {
-				<li class='user-detail'>
-					<h4  style="margin:0px">
-						<a href='@routes.Twitter.usertwitter(0,user.username)'>@user.username</a>
-					</h4>
-					<span>@user.fullname</span>
-					@if(post != null) {
-						<p>@post.post_content</p>
-					}
-					@if(post != null) {
-						<span class='time-stamp'>@post.post_time</span>
-					}
 					<script type="text/javascript">
-					$(document).ready(function(e){
-						$('.dt_danger').click(function(e){
-							var res = confirm('Sure you want to unfollowing this user?');
-							console.log(res);
-							if(res){
+									$(document).ready(function(e){
+										$('.dt_danger').click(function(e){
+											var res = confirm('Sure you want to unfollowing this user?');
+											console.log(res);
+											if(res){
+												
+											}else{
+												e.preventDefault();
+												return;
+											}
+										});
+									});
+								</script>
+					
+						 
+						 @Option(currentPage.items).filterNot(_.isEmpty).map { user_follows =>
+						 @for(user_follow <- user_follows) @{
+						 	val user: User = User.findByUsername(user_follow.user_des_id)
+						 	val post: Posts = Posts.findLastPost(user_follow.user_des_id)
+						 	<li class='user-detail'>
+								<h4  style="margin:0px">
+									<a href='@routes.Twitter.usertwitter(0,user.username)'>@user.username</a>
+								</h4>
+								<span>@user.fullname</span>
+									@if(@post != null) {
+										<p>@post.post_content</p>
+									}
+									@if(@post != null) {
+										<span class='time-stamp'>@post.post_time</span>
+									}
 								
-							}else{
-								e.preventDefault();
-								return;
-							}
-						});
-					});
-				</script>
-					<div class="btn-group" style="float:right;margin-top:-10px;">
-					@form(routes.Follow.unfollow(fol.user_follow_id,currentPage.getPageIndex), 'class -> "topRight") {
-                        <div class="btn-group">
-					     <button class="btn dropdown-toggle" data-toggle="dropdown">
-					      <img src='@routes.Assets.at("images/setting.png")'>
-					       <span class="caret"></span>
-					     </button>
-					     <ul class="dropdown-menu" style="min-width:0px;padding:0px">
-					       <li><input type="submit" value="Unfollow" class="dt_danger"></li>
-					     </ul>
-					   </div>
-					   }
-					   
-					</div>
-                 </li>
-                    } 
+								<div class="btn-group" style="float:right;margin-top:-10px;">
+									@helper.form(routes.Follow.unfollow(user_follow.user_follow_id,currentPage.page), 'class -> "topRight") {
+									<div class="btn-group">
+					     				<button class="btn dropdown-toggle" data-toggle="dropdown">
+					      				
+					      				<img src='@routes.Assets.at("images/setting.png")'></img>
+								       <span class="caret"></span>
+						
+								     </button>
+					     			<ul class="dropdown-menu" style="min-width:0px;padding:0px">
+								       <li><input type="submit" value="Unfollow" class="dt_danger"></input></li>
+								     </ul>
+					   				</div>
+									}
+								</div>
+								</li>
+						 	}
+						 }
                  </ul>
                     } else {
                     
@@ -125,44 +132,48 @@ li:nth-child(2n+1){
 					
 						
 					<ul class='user-list'>
+					<script type="text/javascript">
+						$(document).ready(function(e){
+							$('.dt_danger').click(function(e){
+								var res = confirm('Sure you want to following this user?');
+								console.log(res);
+								if(res){
+									
+								}else{
+									e.preventDefault();
+									return;
+								}
+							});
+						});
+					</script>
                     
-                     @for(fol <-currentPage.getList;user = fol.getUser(fol.user_src_id);post =fol.getUserLastPost(fol.user_src_id)) {
+                     @Option(currentPage.items).filterNot(_.isEmpty).map { user_follows =>
+						 @for(user_follow <- user_follows) @{
+						 	val user: User = User.findByUsername(user_follow.user_des_id)
+						 	val post: Posts = Posts.findLastPost(user_follow.user_des_id)
 				<li class='user-detail'>
 					<h4  style="margin:0px">
 						<a href='@routes.Twitter.usertwitter(0,user.username)'>@user.username</a>
 					</h4>
 					<span>@user.fullname</span>
-					@if(post != null) {
-						<p>@post.post_content</p>
+					@if(@post != null) {
+						<p>post.post_content</p>
 					}
-					@if(post != null) {
-						<span class='time-stamp'>@post.post_time</span>
+					@if(@post != null) {
+						<span class='time-stamp'>post.post_time</span>
 					}
 					
-					<script type="text/javascript">
-					$(document).ready(function(e){
-						$('.dt_danger').click(function(e){
-							var res = confirm('Sure you want to following this user?');
-							console.log(res);
-							if(res){
-								
-							}else{
-								e.preventDefault();
-								return;
-							}
-						});
-					});
-				</script>
+					
 					   <div class="btn-group" style="float:right;margin-top:-10px;">
-					@form(routes.Follow.following(fol.user_src_id,currentPage.getPageIndex), 'class -> "topRight") {
+					@form(routes.Follow.following(user_follow.user_src_id,currentPage.page), 'class -> "topRight") {
 					
 						<div class="btn-group">
 					     <button class="btn dropdown-toggle" data-toggle="dropdown">
-					      <img src='@routes.Assets.at("images/setting.png")'>
+					      <img src='@routes.Assets.at("images/setting.png")'></img>
 					       <span class="caret"></span>
 					     </button>
 					     <ul class="dropdown-menu" style="min-width:0px;padding:0px">
-					       <li><input type="submit" value="Following" class="dt_danger"></li>
+					       <li><input type="submit" value="Following" class="dt_danger"></input></li>
 					     </ul>
 					   </div>
 	                        	
@@ -170,21 +181,21 @@ li:nth-child(2n+1){
 	                        </div>
 	            </li>
                     }
-                    
+                    }
                     </ul>
                    }
 				
 				<div id="pagination" class="pagination" style="float:right">
 					<ul>
-						@if(currentPage.hasPrev) {
+						@currentPage.prev.map { page =>
 						<li class="prev"><a
-							href="@link(currentPage.getPageIndex - 1, types)">≪ 前へ</a>
-						</li> } else {
+							href="@link(page, types)">≪ 前へ</a>
+						</li> }.getOrElse {
 						<li class="prev disabled"><a>≪ 前へ</a></li> }
-						@if(currentPage.hasNext) {
+						@currentPage.next.map { page =>
 						<li class="next"><a
-							href="@link(currentPage.getPageIndex + 1, types)">次へ　≫</a></li> 
-							} else {
+							href="@link(page, types)">次へ　≫</a></li> 
+							}.getOrElse {
 						<li class="next disabled"><a>次へ　≫</a></li> 
 						}
 					</ul>

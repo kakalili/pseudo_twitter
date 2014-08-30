@@ -76,53 +76,53 @@
         
     					} else {
     					<ul class='ul-feed'>
-    					@for(post <- currentPage.getList) {
-							
-								<li>
+    					@Option(currentPage.items).filterNot(_.isEmpty).map { posts =>
+    					@for(post <- posts.toList) {
+    					<li>
 									<p>
-										<a href="@routes.Twitter.usertwitter(0,post.getUserPost.username)">@post.getUserPost.username</a>:
+										<a href="@routes.Twitter.usertwitter(0,post.post_username)">@post.post_username</a>:
 										 @if(post == null) {
                         					<em>-</em>
                         				} else {
                         					@post.post_content
                         				}
 									</p>
-
 									<div>
 										<div class='post-time'>
 											@if(post == null) {
 				                        		<em>-</em>
-				                        	}else{
+				                        	} else {
 				                           		@post.post_time
 				                           		}
-				                           	@if(post.getUserPost.username == usernow) {
-						                    	@form(routes.Twitter.usertwdel(post.post_id,currentPage.getPageIndex), 'class -> "topRight") {
+				                    @if(post.post_username == usernow) {
+						                    	@form(routes.Twitter.usertwdel(post.post_id,currentPage.page), 'class -> "topRight") {
 						                    	
 						                        	<input type="submit" value=' ' style='float:right;width:25px;height:25px;background-image:url("@routes.Assets.at("images/delete.png")")' class="delete-post">
 						                        	
 						                        	
 						                        }	
 					                        }
-					                     }
+    					}
+    					}
 					                     
 										
 										</div>
 									        <div id="pagination" class="pagination" style="float:right">
 									            <ul>
-									                @if(currentPage.hasPrev) {
+									                @currentPage.prev.map { page =>
 									                    <li class="prev">
-									                        <a href="@link(currentPage.getPageIndex - 1,usernow)">≪ 前へ</a>
+									                        <a href="@link(page,usernow)">≪ 前へ</a>
 									                    </li>
-									                } else {
+									                }.getOrElse {
 									                    <li class="prev disabled">
 									                        <a>≪ 前へ</a>
 									                    </li>
 									                }
-									                @if(currentPage.hasNext) {
+									                @currentPage.next.map { page =>
 									                    <li class="next">
-									                        <a href="@link(currentPage.getPageIndex + 1,usernow)">次へ　≫</a>
+									                        <a href="@link(page,usernow)">次へ　≫</a>
 									                    </li>
-									                } else {
+									                }.getOrElse {
 									                    <li class="next disabled">
 									                        <a>次へ　≫</a>
 									                    </li>
