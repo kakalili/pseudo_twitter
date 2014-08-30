@@ -91,11 +91,12 @@ object Twitter extends Controller with Secured{
     }
 
     //Add a post action
-    def addpost = Action { request =>
+    def addpost = Action { implicit request =>
       request.session.get("username").map { user =>
         takePostForm.bindFromRequest.fold(
-          errors => BadRequest(html.twitters(errors)),
-          user => {
+          errors => BadRequest("Oh noes, invalid submission!"
+),
+          postForm => {
             Posts.addPost(user, postForm.postcontent)
              Home.flashing("success" -> "This post had completed!")
          }

@@ -24,12 +24,15 @@ object Application extends Controller {
 
   //create signup form
   val signupForm = Form(
-    mapping(
+    tuple(
       "username" -> nonEmptyText,
       "fullname" -> text,
       "passwd" -> text,
       "email" -> text
-      )(User.apply)(User.unapply) 
+      ) verifying ("Can't insert user data", result => result match {
+        case (fullname, username, passwd, email) => User.insert(fullname, username, passwd, email)
+      }
+      )
     )
 
   //authenticate action
@@ -78,16 +81,16 @@ object Application extends Controller {
   }
   
   //Submit action
-  def submit = Action { request =>
+  def submit = Action { implicit request =>
     signupForm.bindFromRequest.fold(
       //if(User.findByUsername(signupForm.field("username").value) != null) {
       //signupForm.reject("username" , "user already exist")
     //}
       formWithErrors => BadRequest(html.signup(formWithErrors)),
       user => {
-        if(User.findByUsername(signupForm.field("username").value) != null) {
-          if(User.inset(signupForm.field("fullname").value, signupForm.field("username").value, signupForm.field("passwd").value, signupForm.field("email").value) != 0) {
-            Ok(views.html.signupdone(signupForm.field("username").value))
+        if(User.findByUsername(user._1) != null) {
+          if(User.insert(user._1, user._1, user._3, user._4)) {
+            Ok(views.html.signupdone(user._1))
           } else {
             BadRequest(html.signup(signupForm))
           }

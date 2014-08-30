@@ -93,48 +93,34 @@
 						        </div>
 						      } else {
 						      <div class='feed' style="display:table-cell;width:75%;border-top:2px black;border-style:dotted">
-						      <ul class='ul-feed'>zz
-						      @for(user <- currentPage.getList;post = user.getUserLastPostByName(user.username)) {
-								
-									<li>
-										<h5><a href='@routes.Twitter.usertwitter(0,user.username)'>@user.username</a> @user.fullname</h5>
-										<p>
-											@if(user.getUserLastPostByName(user.username) != null) {
-				                        		@user.getUserLastPostByName(user.username).post_content
-				                        		}
-										</p>
-										<span class='post-time'>
-											@if(post != null) {
-				                           		@post.post_time
-				                           		}
-											@form(routes.FriendSearch.addFollow(user.username,currentFilter,currentPage.getPageIndex), 'class -> "topRight") {
-												<div style='fload:right'>
-					                        		<input type="submit" value="Following" class="submit">
-					                        	</div>
-					                        }				                           		
-												<br>
-												<br>
-										</span>
-									</li>
-									}
+						      <ul class='ul-feed'>
+						      @Option(currentPage.items).filterNot(_.isEmpty).map { users =>
+						      @users.map {
+
+						      	user => {
+
+						      	println(@user.username)
+						      	}
+						      }
+						      	}
 								</ul>
 								
 								<div id="pagination" class="pagination" style="float:right">
 						            <ul>
-						                @if(currentPage.hasPrev) {
+						                @currentPage.prev.map { page =>
 						                    <li class="prev">
-						                        <a href="@link(currentPage.getPageIndex - 1, currentFilter)">≪ 前へ</a>
+						                        <a href="@link(page, currentFilter)">≪ 前へ</a>
 						                    </li>
-						                } else {
+						                }getOrElse {
 						                    <li class="prev disabled">
 						                        <a>≪ 前へ</a>
 						                    </li>
 						                }
-						                @if(currentPage.hasNext) {
+						                @currentPage.next.map { page =>
 						                    <li class="next">
-						                        <a href="@link(currentPage.getPageIndex + 1, currentFilter)">次へ　≫</a>
+						                        <a href="@link(page, currentFilter)">次へ　≫</a>
 						                    </li>
-						                } else {
+						                }.getOrElse {
 						                    <li class="next disabled">
 						                        <a>次へ　≫</a>
 						                    </li>

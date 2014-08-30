@@ -82,15 +82,20 @@ object User {
 	}
 
 	//insert models
-	def insert(fullname: String, username: String, passwd: String, email: String) : Int = {
+	def insert(fullname: String, username: String, passwd: String, email: String) : Boolean = {
+		
 		DB.withConnection { implicit connection =>
-			val rowNumbers = SQL("insert into users values({fullname}, {username}, {passwd}, {email})").on(
+			val b: Boolean = false
+			val rowNumbers: Int = SQL("insert into users values({fullname}, {username}, {passwd}, {email})").on(
 				'fullname -> fullname,
 				'username -> username,
 				'passwd -> passwd,
 				'email -> email
 				).executeUpdate()
-			rowNumbers
+			if(rowNumbers > 0) { 
+				!b
+			} 
+			b
 		}
 	}
 }

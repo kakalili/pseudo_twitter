@@ -42,15 +42,10 @@ object FriendSearch extends Controller with Secured{
 	}
 
 	//action search
-	def dosearch = Action { request =>
-		val friForm = getSearchInput.bindFromRequest
-		friForm.fold(
-			errors = {
-				form => Redirect(routes.Twitter.friendsearch)
-				},
-			success = {
-				keys => Redirect(routes.FriendSearch.search(0, friForm.fsearch))
-			}
+	def dosearch = Action { implicit request =>
+		getSearchInput.bindFromRequest.fold(
+			formWithErrors => BadRequest("Oh noes, invalid submission!"),
+			value => Redirect(routes.FriendSearch.search(0, value.fsearch))
 			)
 		
 	}
@@ -79,10 +74,10 @@ object FriendSearch extends Controller with Secured{
 		
 
 	//def
-	def frisearch = Action { request =>
+	def frisearch = Action { implicit request =>
 		getSearchInput.bindFromRequest.fold(
-			errors => BadRequest(html.friendsearch(errors)),
-			user => Redirect(routes.FriendSearch.search(0, friForm.fsearch))
+			errors => BadRequest(html.friendsearch()),
+			user => Redirect(routes.FriendSearch.search(0, user.fsearch))
 			)
 		
 	}
